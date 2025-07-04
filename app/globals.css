@@ -1,0 +1,218 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Monday.com-inspired Design System */
+:root {
+  --monday-purple: #6c5ce7;
+  --monday-blue: #0984e3;
+  --monday-green: #00b894;
+  --monday-orange: #e17055;
+  --monday-red: #d63031;
+  --monday-gray: #636e72;
+  --monday-light-gray: #ddd;
+  --monday-dark-gray: #2d3436;
+}
+
+/* Base Typography */
+.text-gradient-purple {
+  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-blue {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-green {
+  background: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Monday.com-style Buttons */
+.btn-monday-primary {
+  @apply bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105;
+}
+
+.btn-monday-secondary {
+  @apply bg-white text-purple-600 border-2 border-purple-500 px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-purple-50;
+}
+
+.btn-monday-success {
+  @apply bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105;
+}
+
+/* Monday.com-style Cards */
+.monday-card {
+  @apply bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:border-gray-200;
+}
+
+.monday-card-elevated {
+  @apply bg-white rounded-xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl;
+}
+
+/* Monday.com-style Backgrounds */
+.monday-hero-bg {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f1f3ff 100%);
+}
+
+.monday-section {
+  @apply py-20 bg-white;
+}
+
+.monday-stats-bg {
+  background: linear-gradient(135deg, #fafbff 0%, #f0f2ff 100%);
+}
+
+/* Monday.com-style Gradients */
+.monday-gradient-purple {
+  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+}
+
+.monday-gradient-blue {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+}
+
+.monday-gradient-green {
+  background: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
+}
+
+.monday-gradient-orange {
+  background: linear-gradient(135deg, #e17055 0%, #fab1a0 100%);
+}
+
+/* Monday.com-style Navigation */
+.monday-nav {
+  @apply bg-white/90 backdrop-blur-sm border-b border-gray-100;
+}
+
+/* Monday.com-style Interactive Elements */
+.monday-demo-card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-100 p-6 transition-all duration-300 hover:shadow-md;
+}
+
+.monday-metric-card {
+  @apply bg-gradient-to-br from-white to-gray-50 rounded-lg p-4 border border-gray-100;
+}
+
+/* Monday.com-style Animations */
+@keyframes monday-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.monday-pulse {
+  animation: monday-pulse 2s ease-in-out infinite;
+}
+
+@keyframes monday-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.monday-bounce {
+  animation: monday-bounce 2s ease-in-out infinite;
+}
+
+/* Monday.com-style Status Indicators */
+.monday-status-active {
+  @apply bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.monday-status-pending {
+  @apply bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.monday-status-inactive {
+  @apply bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium;
+}
+
+/* Monday.com-style Form Elements */
+.monday-input {
+  @apply border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300;
+}
+
+.monday-select {
+  @apply border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white;
+}
+
+/* Monday.com-style Progress Bars */
+.monday-progress-bar {
+  @apply w-full bg-gray-200 rounded-full h-2;
+}
+
+.monday-progress-fill {
+  @apply bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-500;
+}
+
+/* Monday.com-style Tabs */
+.monday-tab {
+  @apply px-6 py-3 font-medium text-gray-600 border-b-2 border-transparent hover:text-purple-600 hover:border-purple-300 transition-all duration-300;
+}
+
+.monday-tab-active {
+  @apply px-6 py-3 font-medium text-purple-600 border-b-2 border-purple-500;
+}
+
+/* Monday.com-style Tooltips */
+.monday-tooltip {
+  @apply absolute z-50 bg-gray-900 text-white px-3 py-2 rounded-lg text-sm font-medium shadow-lg;
+}
+
+/* Monday.com-style Loading States */
+.monday-skeleton {
+  @apply bg-gray-200 rounded animate-pulse;
+}
+
+/* Monday.com-style Responsive Utilities */
+@media (max-width: 768px) {
+  .monday-card {
+    @apply mx-4;
+  }
+  
+  .monday-hero-bg {
+    @apply px-4;
+  }
+}
+
+/* Monday.com-style Focus States */
+.monday-focus {
+  @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
+}
+
+/* Monday.com-style Hover Effects */
+.monday-hover-lift {
+  @apply transition-transform duration-300 hover:transform hover:-translate-y-1;
+}
+
+.monday-hover-glow {
+  @apply transition-shadow duration-300 hover:shadow-lg;
+}
+
+/* Monday.com-style Text Sizes */
+.monday-text-hero {
+  @apply text-4xl md:text-6xl lg:text-7xl font-bold leading-tight;
+}
+
+.monday-text-title {
+  @apply text-2xl md:text-3xl lg:text-4xl font-semibold;
+}
+
+.monday-text-subtitle {
+  @apply text-lg md:text-xl text-gray-600;
+}
+
+.monday-text-body {
+  @apply text-base text-gray-700;
+}
+
+.monday-text-small {
+  @apply text-sm text-gray-600;
+} 
