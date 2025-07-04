@@ -40,4 +40,9 @@ next-env.d.ts
 *.swo
 
 # OS generated files
-Thumbs.db 
+Thumbs.db
+
+# Local development pages (not tracked in Git)
+app/dashboard/
+app/login/
+app/signup/ 
