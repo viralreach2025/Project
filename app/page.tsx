@@ -440,7 +440,6 @@ export default function Home() {
               <a href="#features" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">Features</a>
               <a href="#how-it-works" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">How It Works</a>
               <a href="#faq" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">FAQ</a>
-              <a href="/skincare" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">Skincare</a>
               <a href="/contact" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">Contact</a>
             </div>
 
@@ -468,7 +467,6 @@ export default function Home() {
                 <a href="#features" className="block px-3 py-2 text-gray-600 hover:text-purple-600 font-medium">Features</a>
                 <a href="#how-it-works" className="block px-3 py-2 text-gray-600 hover:text-purple-600 font-medium">How It Works</a>
                 <a href="#faq" className="block px-3 py-2 text-gray-600 hover:text-purple-600 font-medium">FAQ</a>
-                <a href="/skincare" className="block px-3 py-2 text-gray-600 hover:text-purple-600 font-medium">Skincare</a>
                 <a href="/contact" className="block px-3 py-2 text-gray-600 hover:text-purple-600 font-medium">Contact</a>
                 <div className="pt-2 border-t border-gray-200">
                   <button className="block w-full text-left px-3 py-2 text-purple-600 hover:text-purple-700 font-medium">Sign In</button>
