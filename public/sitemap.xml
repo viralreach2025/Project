@@ -24,6 +24,14 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- Contact Page -->
+  <url>
+    <loc>https://viralreach.com/contact</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
   <!-- Future pages (commented for now) -->
   <!--
   <url>
