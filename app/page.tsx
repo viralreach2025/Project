@@ -357,7 +357,10 @@ export default function Home() {
                 <div className="w-8 h-8 monday-gradient-purple rounded-lg mr-3 flex items-center justify-center">
                   <span className="text-white font-bold text-sm">VR</span>
                 </div>
-                <div className="text-xl font-semibold text-gray-900">ViralReach</div>
+                <div>
+                  <div className="text-xl font-semibold text-gray-900">ViralReach</div>
+                  <div className="text-xs text-gray-500 -mt-1">Brand-Creator Marketplace</div>
+                </div>
               </div>
             </div>
             
@@ -401,9 +404,9 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                Scale Your Brand with<br/>
-                <span className="text-gradient-purple">Performance-Driven Creators</span><br/>
-                Who Actually Deliver
+                <span className="text-gradient-purple">The Marketplace</span><br/>
+                Where Brands Meet Creators<br/>
+                for High-Performance Marketing
               </motion.h1>
               
               <motion.p 
@@ -412,7 +415,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                Connect with vetted creators who genuinely promote your products to engaged audiences. Track real metrics, see transparent results, and only pay for verified performance.
+                The trusted platform where brands discover authentic creators and creators find meaningful partnerships. Track real metrics, see transparent results, and only pay for verified performance.
               </motion.p>
 
               <motion.div
