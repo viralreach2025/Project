@@ -3,9 +3,16 @@ import { Html, Head, Body, Container, Section, Text, Heading, Hr, Link, Img } fr
 interface WaitlistEmailTemplateProps {
   userType: 'brand' | 'creator'
   formData?: any
+  template?: string
+  data?: any
 }
 
-export function WaitlistEmailTemplate({ userType, formData }: WaitlistEmailTemplateProps) {
+export function WaitlistEmailTemplate({ userType, formData, template, data }: WaitlistEmailTemplateProps) {
+  // If it's a skincare quiz, use the skincare template
+  if (template === 'skincare-quiz') {
+    return <SkincareQuizEmailTemplate data={data} />
+  }
+
   const isCreator = userType === 'creator'
   
   return (
@@ -137,6 +144,197 @@ export function WaitlistEmailTemplate({ userType, formData }: WaitlistEmailTempl
   )
 }
 
+// Skincare Quiz Email Template
+function SkincareQuizEmailTemplate({ data }: { data: any }) {
+  const isCreator = data?.userType?.includes('creator')
+  const isBrand = data?.userType?.includes('brand')
+  const isAgency = data?.userType?.includes('agency')
+
+  return (
+    <Html>
+      <Head />
+      <Body style={main}>
+        <Container style={container}>
+          {/* Header */}
+          <Section style={skincareHeader}>
+            <div style={skincareLogo}>
+              <Text style={skincareLogoText}>💧</Text>
+            </div>
+            <Heading style={skincareTitle}>SkinConnect</Heading>
+            <Text style={skincareSubtitle}>Authentic Beauty, Real Results</Text>
+          </Section>
+
+          {/* Welcome Message */}
+          <Section style={content}>
+            <Heading style={h1}>
+              🎉 Welcome to the Authentic Beauty Movement!
+            </Heading>
+            
+            <Text style={text}>
+              Hi {data?.name || 'there'}! Thank you for completing our detailed assessment. We've analyzed your needs and are excited to help you eliminate fake reviews in the skincare industry.
+            </Text>
+
+            {/* Quiz Summary */}
+            <Section style={quizSummary}>
+              <Heading style={h2}>📋 Your Assessment Summary</Heading>
+              
+              <div style={summaryGrid}>
+                <div style={summaryItem}>
+                  <Text style={summaryLabel}>Role</Text>
+                  <Text style={summaryValue}>{data?.userType || 'Not specified'}</Text>
+                </div>
+                
+                {data?.platform && (
+                  <div style={summaryItem}>
+                    <Text style={summaryLabel}>Platform</Text>
+                    <Text style={summaryValue}>{data.platform}</Text>
+                  </div>
+                )}
+                
+                {data?.followers && (
+                  <div style={summaryItem}>
+                    <Text style={summaryLabel}>Reach</Text>
+                    <Text style={summaryValue}>{data.followers}</Text>
+                  </div>
+                )}
+                
+                {data?.skinType && (
+                  <div style={summaryItem}>
+                    <Text style={summaryLabel}>Focus</Text>
+                    <Text style={summaryValue}>{data.skinType}</Text>
+                  </div>
+                )}
+                
+                {data?.budget && (
+                  <div style={summaryItem}>
+                    <Text style={summaryLabel}>Budget</Text>
+                    <Text style={summaryValue}>{data.budget}</Text>
+                  </div>
+                )}
+                
+                {data?.timeline && (
+                  <div style={summaryItem}>
+                    <Text style={summaryLabel}>Timeline</Text>
+                    <Text style={summaryValue}>{data.timeline}</Text>
+                  </div>
+                )}
+              </div>
+
+              {data?.goals && data.goals.length > 0 && (
+                <div style={goalsSection}>
+                  <Text style={summaryLabel}>Your Goals:</Text>
+                  <ul style={list}>
+                    {data.goals.map((goal: string, index: number) => (
+                      <li key={index} style={listItem}>✅ {goal}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {data?.painPoints && data.painPoints.length > 0 && (
+                <div style={goalsSection}>
+                  <Text style={summaryLabel}>Your Challenges:</Text>
+                  <ul style={list}>
+                    {data.painPoints.map((pain: string, index: number) => (
+                      <li key={index} style={listItem}>🔧 {pain}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </Section>
+
+            {/* Personalized Solutions */}
+            <Heading style={h2}>🎯 Your Personalized Solution</Heading>
+            
+            {isCreator && (
+              <>
+                <Text style={text}>
+                  As a <strong>{data?.role || 'content creator'}</strong> with {data?.followers || 'your audience'}, here's how we'll help you:
+                </Text>
+                <ul style={list}>
+                  <li style={listItem}>💎 <strong>Authentic Partnerships:</strong> Work only with brands that value real results</li>
+                  <li style={listItem}>💰 <strong>Premium Compensation:</strong> Earn $2K-$15K for 90-day authentic campaigns</li>
+                  <li style={listItem}>📈 <strong>Audience Growth:</strong> Build genuine trust through real transformation stories</li>
+                  <li style={listItem}>🤝 <strong>Long-term Relationships:</strong> Create lasting partnerships with premium brands</li>
+                  <li style={listItem}>📊 <strong>Performance Tracking:</strong> See your real impact with detailed analytics</li>
+                </ul>
+              </>
+            )}
+
+            {isBrand && (
+              <>
+                <Text style={text}>
+                  As a <strong>{data?.role || 'skincare brand'}</strong> with a {data?.budget || 'budget'} for campaigns, here's how we'll help you:
+                </Text>
+                <ul style={list}>
+                  <li style={listItem}>🎯 <strong>Perfect Creator Matching:</strong> 98% accuracy in audience alignment</li>
+                  <li style={listItem}>📊 <strong>Real ROI Tracking:</strong> See exactly what's working and what's not</li>
+                  <li style={listItem}>✅ <strong>Verified Creators:</strong> Only work with creators who have real audiences</li>
+                  <li style={listItem}>⏱️ <strong>90-Day Testing:</strong> Authentic product testing with real results</li>
+                  <li style={listItem}>🛡️ <strong>Fraud Protection:</strong> Built-in safeguards against fake engagement</li>
+                </ul>
+              </>
+            )}
+
+            {isAgency && (
+              <>
+                <Text style={text}>
+                  As a <strong>marketing agency</strong> managing influencer campaigns, here's how we'll help you:
+                </Text>
+                <ul style={list}>
+                  <li style={listItem}>📈 <strong>Better Results:</strong> Deliver authentic campaigns that actually convert</li>
+                  <li style={listItem}>💰 <strong>Client Satisfaction:</strong> Transparent reporting and real ROI</li>
+                  <li style={listItem}>🎯 <strong>Perfect Matching:</strong> AI-powered creator selection for optimal results</li>
+                  <li style={listItem}>⏱️ <strong>Time Savings:</strong> Automated processes and verified creators</li>
+                  <li style={listItem}>📊 <strong>Detailed Analytics:</strong> Comprehensive reporting for your clients</li>
+                </ul>
+              </>
+            )}
+
+            <Hr style={hr} />
+
+            {/* Next Steps */}
+            <Section style={timeline}>
+              <Heading style={h2}>🚀 What Happens Next?</Heading>
+              <Text style={text}>
+                <strong>Within 24 hours:</strong> You'll receive a personalized strategy call invitation
+              </Text>
+              <Text style={text}>
+                <strong>Week 1:</strong> Exclusive platform access and creator/brand matching</Text>
+              <Text style={text}>
+                <strong>Week 2:</strong> Your first authentic collaboration setup
+              </Text>
+            </Section>
+
+            <Hr style={hr} />
+
+            <Text style={text}>
+              Ready to eliminate fake reviews and create authentic beauty connections? Reply to this email to schedule your strategy call!
+            </Text>
+
+            <Text style={signature}>
+              Cheers,<br />
+              <strong>The SkinConnect Team</strong><br />
+              <Link href="https://skinconnect.com" style={link}>skinconnect.com</Link>
+            </Text>
+          </Section>
+
+          {/* Footer */}
+          <Section style={footer}>
+            <Text style={footerText}>
+              You received this email because you completed the SkinConnect assessment.
+            </Text>
+            <Text style={footerText}>
+              SkinConnect • Authentic Beauty, Real Results<br />
+              <Link href="mailto:support@skinconnect.com" style={link}>support@skinconnect.com</Link>
+            </Text>
+          </Section>
+        </Container>
+      </Body>
+    </Html>
+  )
+}
+
 // Styles
 const main = {
   backgroundColor: '#f6f9fc',
@@ -181,6 +379,47 @@ const title = {
   color: '#ffffff',
   fontSize: '24px',
   fontWeight: 'bold',
+  margin: '0',
+  lineHeight: '1.2',
+}
+
+// Skincare-specific styles
+const skincareHeader = {
+  background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+  padding: '40px 30px',
+  textAlign: 'center' as const,
+}
+
+const skincareLogo = {
+  display: 'inline-block',
+  width: '60px',
+  height: '60px',
+  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  borderRadius: '16px',
+  marginBottom: '16px',
+  textAlign: 'center' as const,
+  paddingTop: '16px',
+}
+
+const skincareLogoText = {
+  color: '#ffffff',
+  fontSize: '24px',
+  fontWeight: 'bold',
+  margin: '0',
+  lineHeight: '1.2',
+}
+
+const skincareTitle = {
+  color: '#ffffff',
+  fontSize: '28px',
+  fontWeight: 'bold',
+  margin: '0 0 8px 0',
+  lineHeight: '1.2',
+}
+
+const skincareSubtitle = {
+  color: 'rgba(255, 255, 255, 0.9)',
+  fontSize: '16px',
   margin: '0',
   lineHeight: '1.2',
 }
@@ -233,7 +472,47 @@ const timeline = {
   margin: '20px 0',
 }
 
+const quizSummary = {
+  backgroundColor: '#fef7ff',
+  padding: '24px',
+  borderRadius: '12px',
+  border: '1px solid #e9d5ff',
+  margin: '20px 0',
+}
 
+const summaryGrid = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+  gap: '16px',
+  margin: '16px 0',
+}
+
+const summaryItem = {
+  backgroundColor: '#ffffff',
+  padding: '12px',
+  borderRadius: '8px',
+  border: '1px solid #f3e8ff',
+}
+
+const summaryLabel = {
+  color: '#7c3aed',
+  fontSize: '12px',
+  fontWeight: 'bold',
+  textTransform: 'uppercase' as const,
+  margin: '0 0 4px 0',
+  letterSpacing: '0.5px',
+}
+
+const summaryValue = {
+  color: '#1a1a1a',
+  fontSize: '14px',
+  fontWeight: '600',
+  margin: '0',
+}
+
+const goalsSection = {
+  margin: '16px 0',
+}
 
 const signature = {
   margin: '30px 0 0 0',

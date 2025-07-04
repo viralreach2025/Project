@@ -501,11 +501,10 @@ function CollaborationStep() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-gradient-to-r from-green-500 to-blue-500 text-white p-8 rounded-2xl text-center"
+          className="bg-gradient-to-r from-green-500 to-blue-500 text-white p-4 rounded-lg text-center"
         >
-          <TrendingUp className="w-12 h-12 mx-auto mb-4" />
-          <h3 className="text-2xl font-bold mb-2">Campaign is Live!</h3>
-          <p className="text-lg opacity-90">Content is now performing across all platforms</p>
+          <TrendingUp className="w-6 h-6 mx-auto mb-2" />
+          <div className="font-semibold">Campaign is now live and performing!</div>
         </motion.div>
       )}
     </div>
@@ -607,69 +606,107 @@ function MetricsStep() {
 function PaymentStep() {
   return (
     <div className="p-12">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-4">Campaign Results & Payment</h2>
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 p-8 rounded-2xl">
-          <div className="text-5xl font-bold text-green-600 mb-4">340% ROI</div>
-          <p className="text-xl text-gray-700">Your campaign exceeded all performance goals!</p>
-        </div>
-      </div>
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Results & Payment</h2>
       
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">Performance Summary</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <span className="text-gray-700 font-medium">Target Conversions</span>
-              <span className="font-bold text-gray-800">100</span>
+        <div className="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">Campaign Performance</h3>
+          
+          <div className="space-y-4">
+            <div className="bg-white p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-gray-600">Total Reach</span>
+                <span className="font-bold text-green-600">2.4M</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-green-500 h-2 rounded-full" style={{ width: '85%' }}></div>
+              </div>
             </div>
-            <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl">
-              <span className="text-green-700 font-medium">Actual Conversions</span>
-              <span className="font-bold text-green-600">340</span>
+            
+            <div className="bg-white p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-gray-600">Engagement Rate</span>
+                <span className="font-bold text-blue-600">8.7%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '87%' }}></div>
+              </div>
             </div>
-            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
-              <span className="text-blue-700 font-medium">Performance Bonus</span>
-              <span className="font-bold text-blue-600">240% over target</span>
+            
+            <div className="bg-white p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-gray-600">Click-through Rate</span>
+                <span className="font-bold text-purple-600">12.3%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-purple-500 h-2 rounded-full" style={{ width: '92%' }}></div>
+              </div>
+            </div>
+            
+            <div className="bg-white p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-gray-600">Conversions</span>
+                <span className="font-bold text-orange-600">1,247</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-orange-500 h-2 rounded-full" style={{ width: '78%' }}></div>
+              </div>
             </div>
           </div>
         </div>
         
-        <div className="space-y-4">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">Payment Breakdown</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <span className="text-gray-700 font-medium">Campaign Budget</span>
-              <span className="font-bold text-gray-800">$2,500</span>
+        <div className="space-y-6">
+          <div className="bg-white border-2 border-green-200 rounded-2xl p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Payment Summary</h3>
+            
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Base Payment</span>
+                <span className="font-semibold">$2,500</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Performance Bonus</span>
+                <span className="font-semibold text-green-600">+$750</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Platform Fee</span>
+                <span className="font-semibold text-red-600">-$325</span>
+              </div>
+              <div className="border-t pt-3 flex justify-between">
+                <span className="font-bold text-gray-800">Total Payout</span>
+                <span className="font-bold text-green-600 text-xl">$2,925</span>
+              </div>
             </div>
-            <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl">
-              <span className="text-green-700 font-medium">Revenue Generated</span>
-              <span className="font-bold text-green-600">$8,500</span>
+            
+            <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <span className="font-semibold text-green-800">Payment Verified & Released</span>
+              </div>
+              <p className="text-sm text-green-700 mt-1">Funds transferred to creator's account</p>
             </div>
-            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
-              <span className="text-blue-700 font-medium">Creator Payment</span>
-              <span className="font-bold text-blue-600">$750</span>
-            </div>
-            <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl border-2 border-purple-200">
-              <span className="text-purple-700 font-bold text-lg">Your Net Profit</span>
-              <span className="font-bold text-purple-600 text-2xl">$6,000</span>
+          </div>
+          
+          <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 rounded-2xl">
+            <h3 className="text-xl font-bold mb-4">Campaign Success!</h3>
+            <p className="text-lg mb-4">This campaign exceeded all performance targets and delivered exceptional ROI.</p>
+            <div className="flex items-center space-x-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold">340%</div>
+                <div className="text-sm opacity-90">ROI</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">$8,500</div>
+                <div className="text-sm opacity-90">Revenue Generated</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">4.8★</div>
+                <div className="text-sm opacity-90">Creator Rating</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <motion.div 
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-8 rounded-2xl text-center mt-8"
-      >
-        <CheckCircle className="w-16 h-16 mx-auto mb-4" />
-        <h3 className="text-3xl font-bold mb-4">Payment Processed Successfully!</h3>
-        <p className="text-xl opacity-90 mb-4">Creators paid automatically based on verified results</p>
-        <div className="bg-white bg-opacity-20 p-4 rounded-xl">
-          <p className="text-lg font-semibold">You only paid for what actually worked</p>
-        </div>
-      </motion.div>
     </div>
   )
 } 

@@ -7,11 +7,39 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, userType, formData } = body
+    const { email, userType, formData, template, data: quizData, subject, name } = body
 
-    if (!email || !userType) {
+    if (!email) {
       return NextResponse.json(
-        { error: 'Email and userType are required' },
+        { error: 'Email is required' },
+        { status: 400 }
+      )
+    }
+
+    // Handle skincare quiz template
+    if (template === 'skincare-quiz') {
+      const { data, error } = await resend.emails.send({
+        from: 'SkinConnect <support@skinconnect.com>',
+        to: [email],
+        subject: subject || 'Welcome to the Authentic Beauty Movement! 🎉',
+        react: WaitlistEmailTemplate({ userType: 'creator', formData, template, data: quizData }),
+      })
+
+      if (error) {
+        console.error('Resend error:', error)
+        return NextResponse.json(
+          { error: 'Failed to send email' },
+          { status: 500 }
+        )
+      }
+
+      return NextResponse.json({ success: true, data })
+    }
+
+    // Handle regular waitlist emails
+    if (!userType) {
+      return NextResponse.json(
+        { error: 'userType is required for waitlist emails' },
         { status: 400 }
       )
     }
