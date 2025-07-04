@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { CheckCircle, ChevronDown, Menu, X, ArrowRight, Search, Shield, TrendingUp, Users, DollarSign, BarChart3, MessageSquare, Star, Clock, Camera, Target } from 'lucide-react'
+import { CheckCircle, ChevronDown, Menu, X, ArrowRight, Search, Shield, TrendingUp, Users, DollarSign, BarChart3, MessageSquare, Star, Clock, Camera, Target, Eye } from 'lucide-react'
 import HeroDemo from './components/HeroDemo'
 import { saveWaitlistEntry } from '../lib/database'
 
@@ -146,32 +146,104 @@ export default function Home() {
   }
 
   const problems = [
-    'Finding trustworthy influencers is time-consuming.',
-    'Hard to verify if influencers actually post or perform.',
-    'Tracking engagement and ROI feels like guesswork.',
-    'Paying upfront with no guarantee of results is risky.'
+    {
+      title: "You spent $5,000 on an influencer who never posted",
+      description: "They took your money, promised content, then disappeared. Sound familiar?",
+      icon: "💸",
+      stat: "73% of brands have been ghosted by influencers"
+    },
+    {
+      title: "Half their followers are bots from Bangladesh", 
+      description: "That 100K follower account? Only 12K are real people who might buy your product.",
+      icon: "🤖",
+      stat: "Average of 45% fake followers on influencer accounts"
+    },
+    {
+      title: "You have no idea if it's actually working",
+      description: "Did that post drive sales? Increase brand awareness? You're flying blind.",
+      icon: "🔍",
+      stat: "68% of brands can't measure influencer ROI"
+    },
+    {
+      title: "Finding good influencers takes forever",
+      description: "Scrolling through Instagram for hours, DMing dozens of creators, most don't reply.",
+      icon: "⏰",
+      stat: "Average 40 hours spent per campaign just finding influencers"
+    }
   ]
 
   const solutions = [
     {
-      title: 'Verified Influencers',
-      description: 'We vet and verify creators to ensure real audiences and authentic content.',
-      icon: <Shield className="w-6 h-6" />
+      title: 'No More Ghosting - Guaranteed Delivery',
+      description: 'Every influencer is verified and contractually bound to deliver. If they don\'t post, you don\'t pay. Plus, we provide backup influencers automatically.',
+      icon: <Shield className="w-6 h-6" />,
+      details: [
+        'Escrow payment system - money held until content is live',
+        'Backup influencer network activated within 24 hours',
+        'Legal contracts with performance guarantees',
+        'Real-time delivery tracking and notifications'
+      ],
+      solves: "Solves: Getting ghosted by influencers who take money and disappear"
     },
     {
-      title: 'Performance Tracking',
-      description: 'Track views, likes, comments, and engagement in real-time.',
-      icon: <BarChart3 className="w-6 h-6" />
+      title: 'Real Followers Only - AI-Powered Verification',
+      description: 'Our advanced AI scans every influencer\'s followers for bots, fake accounts, and suspicious activity. Only authentic audiences make it through.',
+      icon: <Eye className="w-6 h-6" />,
+      details: [
+        'AI bot detection with 98% accuracy rate',
+        'Engagement pattern analysis to spot fake activity',
+        'Geographical follower distribution checks',
+        'Regular re-verification to maintain quality'
+      ],
+      solves: "Solves: Wasting money on influencers with fake followers"
     },
     {
-      title: 'Flexible Payments',
-      description: 'Pay fixed fees or based on post performance — you choose what works best.',
-      icon: <DollarSign className="w-6 h-6" />
+      title: 'Complete Performance Transparency',
+      description: 'See exactly how your campaigns perform with real-time analytics, conversion tracking, and ROI calculations. No more guessing games.',
+      icon: <BarChart3 className="w-6 h-6" />,
+      details: [
+        'Live dashboard with views, clicks, and conversions',
+        'UTM tracking for every campaign link',
+        'ROI calculator with profit/loss breakdowns',
+        'Audience demographic insights and engagement quality'
+      ],
+      solves: "Solves: Not knowing if your campaigns are actually working"
     },
     {
-      title: 'Easy Campaign Management',
-      description: 'Create, approve, and monitor campaigns all in one place.',
-      icon: <Target className="w-6 h-6" />
+      title: 'Instant Influencer Discovery',
+      description: 'Find perfect influencers in minutes, not hours. Our smart matching algorithm connects you with creators who actually fit your brand.',
+      icon: <Target className="w-6 h-6" />,
+      details: [
+        'Smart filters: niche, audience, engagement, location',
+        'AI-powered recommendations based on your goals',
+        'Instant availability status and response rates',
+        'Pre-vetted creators ready to start immediately'
+      ],
+      solves: "Solves: Spending weeks searching for the right influencers"
+    },
+    {
+      title: 'Flexible Payment Models',
+      description: 'Choose how you want to pay: fixed rates, pay-per-view, pay-per-click, or pay-per-conversion. Only pay for results that matter to your business.',
+      icon: <DollarSign className="w-6 h-6" />,
+      details: [
+        'Fixed fee for guaranteed content delivery',
+        'Pay-per-view for brand awareness campaigns',
+        'Pay-per-click for traffic generation',
+        'Pay-per-conversion for direct sales goals'
+      ],
+      solves: "Solves: Paying upfront with no guarantee of results"
+    },
+    {
+      title: 'End-to-End Campaign Management',
+      description: 'From brief creation to final reporting, manage everything in one place. Approve content, track progress, and communicate with influencers seamlessly.',
+      icon: <CheckCircle className="w-6 h-6" />,
+      details: [
+        'Campaign brief builder with clear deliverables',
+        'Content approval workflow with revision requests',
+        'Built-in messaging system for smooth communication',
+        'Automated reporting and performance summaries'
+      ],
+      solves: "Solves: Juggling multiple platforms and losing track of campaigns"
     }
   ]
 
@@ -346,7 +418,7 @@ export default function Home() {
   ]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pt-16 md:pt-0">
       {/* Navigation */}
       <header>
         <nav className="monday-nav sticky top-0 z-50" role="navigation" aria-label="Main navigation">
@@ -387,6 +459,30 @@ export default function Home() {
               </button>
             </div>
           </div>
+          
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden bg-white border-t border-gray-200">
+              <div className="px-4 pt-2 pb-3 space-y-1">
+                <a href="#features" className="block px-3 py-2 text-gray-600 hover:text-purple-600 font-medium">Features</a>
+                <a href="#how-it-works" className="block px-3 py-2 text-gray-600 hover:text-purple-600 font-medium">How It Works</a>
+                <a href="#faq" className="block px-3 py-2 text-gray-600 hover:text-purple-600 font-medium">FAQ</a>
+                <a href="/contact" className="block px-3 py-2 text-gray-600 hover:text-purple-600 font-medium">Contact</a>
+                <div className="pt-2 border-t border-gray-200">
+                  <button className="block w-full text-left px-3 py-2 text-purple-600 hover:text-purple-700 font-medium">Sign In</button>
+                  <button 
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="w-full mt-2 btn-monday-primary text-center"
+                  >
+                    Join Waitlist
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         </nav>
       </header>
@@ -431,7 +527,7 @@ export default function Home() {
                     <p className="text-gray-600">We'll notify you when ViralReach launches.</p>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="flex gap-3">
+                  <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
                     <input
                       type="email"
                       placeholder="Enter your email"
@@ -443,7 +539,7 @@ export default function Home() {
                     <button 
                       type="button" 
                       onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
-                      className="btn-monday-primary whitespace-nowrap"
+                      className="btn-monday-primary whitespace-nowrap sm:w-auto"
                     >
                       Get Early Access
                     </button>
@@ -487,7 +583,7 @@ export default function Home() {
       </section>
 
       {/* Problems Section */}
-      <section className="monday-section">
+      <section className="monday-stats-bg py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
@@ -499,10 +595,16 @@ export default function Home() {
             {problems.map((problem, index) => (
               <div key={index} className="monday-card p-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <X className="w-4 h-4 text-red-600" />
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 text-2xl">
+                    {problem.icon}
                   </div>
-                  <p className="text-gray-700 text-lg">{problem}</p>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{problem.title}</h3>
+                    <p className="text-gray-600 mb-3">{problem.description}</p>
+                    <div className="text-sm font-medium text-red-700 bg-red-50 px-3 py-1 rounded-lg inline-block">
+                      📊 {problem.stat}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -512,27 +614,66 @@ export default function Home() {
 
       {/* Solutions Section */}
       <section className="monday-stats-bg py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
               Our Solution: A Better Way to Promote
             </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              ViralReach directly addresses every pain point of traditional influencer marketing with innovative solutions
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-8">
             {solutions.map((solution, index) => (
-              <div key={index} className="monday-card p-6">
-                <div className="flex items-start space-x-4">
+              <div key={index} className="monday-card p-8">
+                <div className="flex items-start space-x-4 mb-6">
                   <div className="w-12 h-12 monday-gradient-purple rounded-full flex items-center justify-center flex-shrink-0 text-white">
                     {solution.icon}
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">{solution.title}</h3>
-                    <p className="text-gray-600">{solution.description}</p>
+                    <p className="text-gray-600 mb-4">{solution.description}</p>
+                    
+                    {/* Problem it solves */}
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                      <p className="text-sm font-medium text-green-800">✅ {solution.solves}</p>
+                    </div>
+                    
+                    {/* Detailed features */}
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">How it works:</h4>
+                      <ul className="space-y-1">
+                        {solution.details.map((detail, i) => (
+                          <li key={i} className="text-sm text-gray-600 flex items-start">
+                            <CheckCircle className="w-3 h-3 mr-2 text-green-500 flex-shrink-0 mt-0.5" />
+                            {detail}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
+          </div>
+          
+          {/* Call to Action */}
+          <div className="mt-16 text-center">
+            <div className="monday-card p-8 bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+                Ready to Experience the Difference?
+              </h3>
+              <p className="text-lg text-gray-600 mb-6">
+                Join thousands of brands and creators who've already discovered a better way to collaborate
+              </p>
+              <button
+                onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
+                className="btn-monday-primary text-lg px-8 py-4 inline-flex items-center"
+              >
+                Join the Waitlist <ArrowRight className="w-5 h-5 ml-2" />
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -720,7 +861,7 @@ export default function Home() {
                     </p>
                     
                     <div className="max-w-md mx-auto">
-                      <form onSubmit={handleSubmit} className="flex gap-3">
+                      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
                         <input
                           type="email"
                           placeholder="Enter your email"
@@ -729,7 +870,7 @@ export default function Home() {
                           className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                           required
                         />
-                        <button type="submit" className="btn-monday-primary whitespace-nowrap">
+                        <button type="submit" className="btn-monday-primary whitespace-nowrap sm:w-auto">
                           Continue
                         </button>
                       </form>

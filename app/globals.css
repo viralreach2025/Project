@@ -174,11 +174,157 @@
 /* Monday.com-style Responsive Utilities */
 @media (max-width: 768px) {
   .monday-card {
-    @apply mx-4;
+    @apply mx-2 p-4;
   }
   
   .monday-hero-bg {
     @apply px-4;
+  }
+  
+  /* Mobile Typography Improvements */
+  .text-4xl {
+    font-size: 2rem !important;
+    line-height: 1.2;
+  }
+  
+  .text-5xl {
+    font-size: 2.5rem !important;
+    line-height: 1.1;
+  }
+  
+  .text-6xl {
+    font-size: 3rem !important;
+    line-height: 1.1;
+  }
+  
+  .text-7xl {
+    font-size: 3.5rem !important;
+    line-height: 1;
+  }
+  
+  /* Mobile Grid Improvements */
+  .grid.md\\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+  
+  .grid.md\\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+  
+  .grid.lg\\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem;
+  }
+  
+  .grid.md\\:grid-cols-2.lg\\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+  
+  /* Mobile Form Improvements */
+  .flex.gap-3 {
+    flex-direction: column !important;
+    gap: 0.75rem;
+  }
+  
+  .flex.gap-3 input,
+  .flex.gap-3 button {
+    width: 100% !important;
+  }
+  
+  /* Mobile Button Improvements */
+  .btn-monday-primary {
+    @apply w-full py-4 text-base;
+  }
+  
+  /* Mobile Spacing Improvements */
+  .py-20 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+  
+  .py-16 {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+  
+  .mb-16 {
+    margin-bottom: 2rem !important;
+  }
+  
+  .mb-12 {
+    margin-bottom: 1.5rem !important;
+  }
+  
+  /* Mobile Navigation Improvements */
+  .sticky.top-0 {
+    position: fixed !important;
+    width: 100% !important;
+    z-index: 1000 !important;
+  }
+  
+  /* Mobile Hero Section */
+  .max-w-md {
+    max-width: 100% !important;
+  }
+  
+  /* Mobile Text Alignment */
+  .text-center.lg\\:text-left {
+    text-align: center !important;
+  }
+  
+  /* Mobile Flex Improvements */
+  .flex.flex-col.sm\\:flex-row {
+    flex-direction: column !important;
+    gap: 1rem;
+  }
+  
+  .space-y-4.sm\\:space-y-0.sm\\:space-x-8 > * {
+    margin-right: 0 !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .space-y-4.sm\\:space-y-0.sm\\:space-x-8 > *:last-child {
+    margin-bottom: 0 !important;
+  }
+  
+  /* Mobile Padding Adjustments */
+  .px-4.sm\\:px-6.lg\\:px-8 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .p-12 {
+    padding: 2rem !important;
+  }
+  
+  .p-8 {
+    padding: 1.5rem !important;
+  }
+  
+  .p-6 {
+    padding: 1rem !important;
+  }
+}
+
+/* Tablet Responsiveness */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .text-6xl {
+    font-size: 3.5rem;
+  }
+  
+  .text-7xl {
+    font-size: 4rem;
+  }
+  
+  .grid.lg\\:grid-cols-2 {
+    gap: 2rem;
+  }
+  
+  .monday-card {
+    padding: 1.5rem;
   }
 }
 
