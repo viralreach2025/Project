@@ -1,10 +1,54 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { CheckCircle, ChevronDown, Menu, X, ArrowRight, Search, Shield, TrendingUp, Users, DollarSign, BarChart3, MessageSquare, Star, Clock, Camera, Target, Eye } from 'lucide-react'
 import HeroDemo from './components/HeroDemo'
 import { saveWaitlistEntry } from '../lib/database'
+
+// Typewriter component
+function TypewriterText({ text, speed = 100, deleteSpeed = 50, delay = 2000 }: { 
+  text: string; 
+  speed?: number; 
+  deleteSpeed?: number; 
+  delay?: number; 
+}) {
+  const [displayText, setDisplayText] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        if (currentIndex < text.length) {
+          setDisplayText(text.slice(0, currentIndex + 1))
+          setCurrentIndex(currentIndex + 1)
+        } else {
+          // Start deleting after delay
+          setTimeout(() => setIsDeleting(true), delay)
+        }
+      } else {
+        if (currentIndex > 0) {
+          setDisplayText(text.slice(0, currentIndex - 1))
+          setCurrentIndex(currentIndex - 1)
+        } else {
+          setIsDeleting(false)
+          setCurrentIndex(0)
+        }
+      }
+    }, isDeleting ? deleteSpeed : speed)
+
+    return () => clearTimeout(timeout)
+  }, [currentIndex, isDeleting, text, speed, deleteSpeed, delay])
+
+  return (
+    <span className="inline-block">
+      {displayText}
+      <span className="inline-block w-0.5 h-6 bg-purple-500 ml-1 animate-pulse"></span>
+    </span>
+  )
+}
 
 export default function Home() {
   const [email, setEmail] = useState('')
@@ -444,7 +488,7 @@ export default function Home() {
             </div>
 
             <div className="hidden md:flex items-center space-x-4">
-              <button className="text-purple-600 hover:text-purple-700 font-medium">Sign In</button>
+              <Link href="/login" className="text-purple-600 hover:text-purple-700 font-medium">Sign In</Link>
               <button 
                 onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
                 className="btn-monday-primary"
@@ -500,18 +544,32 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                <span className="text-gradient-purple">The Marketplace</span><br/>
-                Where Brands Meet Creators<br/>
-                for High-Performance Marketing
+                <span className="text-gradient-purple">The Influencer Marketplace</span><br/>
+                for Real Results — Starting with<br/>
+                <span className="text-gradient-purple">Skincare</span>
               </motion.h1>
+              
+              <motion.div 
+                className="text-xl font-bold text-black mb-4 max-w-2xl lg:max-w-none"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <TypewriterText 
+                  text="Now onboarding early skincare brands & creators."
+                  speed={100}
+                  deleteSpeed={50}
+                  delay={2000}
+                />
+              </motion.div>
               
               <motion.p 
                 className="text-xl text-gray-600 mb-8 max-w-2xl lg:max-w-none"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
               >
-                The trusted platform where brands discover authentic creators and creators find meaningful partnerships. Track real metrics, see transparent results, and only pay for verified performance.
+                Get UGC that sells — without chasing influencers or guessing ROI. The trusted platform where skincare brands connect with authentic creators. Track real metrics, approve content, and only pay when performance is verified. <span className="font-medium">Expanding soon to beauty, wellness, and more.</span>
               </motion.p>
 
               <motion.div
