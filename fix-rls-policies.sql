@@ -1,33 +1,121 @@
--- Fix RLS Policies for ViralReach Waitlist
--- Run this SQL in your Supabase SQL editor to fix the RLS policies
+-- =====================================================
+-- FIX RLS POLICIES FOR USER SIGNUP
+-- =====================================================
 
--- First, let's see what policies currently exist and remove them
-DROP POLICY IF EXISTS "Allow insert access for all users" ON waitlist_entries;
-DROP POLICY IF EXISTS "Allow read access for authenticated users" ON waitlist_entries;
-DROP POLICY IF EXISTS "Enable insert for anonymous users" ON waitlist_entries;
-DROP POLICY IF EXISTS "Enable all access for service role" ON waitlist_entries;
-DROP POLICY IF EXISTS "Enable read for authenticated users" ON waitlist_entries;
+-- Drop existing policies that might conflict
+DROP POLICY IF EXISTS "Users can view their own profile" ON public.users;
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.users;
 
--- Temporarily disable RLS to test
-ALTER TABLE waitlist_entries DISABLE ROW LEVEL SECURITY;
+-- Create comprehensive RLS policies for users table
+CREATE POLICY "Users can insert their own profile" ON public.users
+    FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Re-enable RLS
-ALTER TABLE waitlist_entries ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view their own profile" ON public.users
+    FOR SELECT USING (auth.uid() = id);
 
--- Create a simple policy that allows all operations for all users
-CREATE POLICY "Allow all access" ON waitlist_entries
-  FOR ALL 
-  TO public
-  USING (true)
-  WITH CHECK (true);
+CREATE POLICY "Users can update their own profile" ON public.users
+    FOR UPDATE USING (auth.uid() = id);
 
--- Alternative: If the above doesn't work, create specific policies
--- CREATE POLICY "Enable insert for all" ON waitlist_entries
---   FOR INSERT 
---   TO public
---   WITH CHECK (true);
+-- Allow service role to manage all users (for admin functions)
+CREATE POLICY "Service role can manage all users" ON public.users
+    FOR ALL USING (auth.role() = 'service_role');
 
--- CREATE POLICY "Enable select for all" ON waitlist_entries
---   FOR SELECT 
---   TO public
---   USING (true); 
+-- =====================================================
+-- ADDITIONAL POLICIES FOR OTHER TABLES
+-- =====================================================
+
+-- Creator profiles policies
+CREATE POLICY "Creators can insert their own profile" ON public.creator_profiles
+    FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Creators can view their own profile" ON public.creator_profiles
+    FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Creators can update their own profile" ON public.creator_profiles
+    FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Brands can view creator profiles" ON public.creator_profiles
+    FOR SELECT USING (EXISTS (
+        SELECT 1 FROM public.users WHERE id = auth.uid() AND user_type = 'brand'
+    ));
+
+-- Brand profiles policies
+CREATE POLICY "Brands can insert their own profile" ON public.brand_profiles
+    FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Brands can view their own profile" ON public.brand_profiles
+    FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Brands can update their own profile" ON public.brand_profiles
+    FOR UPDATE USING (auth.uid() = user_id);
+
+-- Applications policies
+CREATE POLICY "Creators can insert applications" ON public.applications
+    FOR INSERT WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.creator_profiles 
+            WHERE id = creator_id AND user_id = auth.uid()
+        )
+    );
+
+CREATE POLICY "Creators can view their applications" ON public.applications
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM public.creator_profiles 
+            WHERE id = creator_id AND user_id = auth.uid()
+        )
+    );
+
+CREATE POLICY "Brands can view applications for their campaigns" ON public.applications
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM public.campaigns c
+            JOIN public.brand_profiles b ON c.brand_id = b.id
+            WHERE c.id = campaign_id AND b.user_id = auth.uid()
+        )
+    );
+
+-- =====================================================
+-- VERIFICATION
+-- =====================================================
+
+-- Check if policies are created successfully
+SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual 
+FROM pg_policies 
+WHERE tablename = 'users' 
+ORDER BY policyname; 
+
+-- Fix RLS policies for portfolio_items table
+-- Run this in your Supabase SQL Editor
+
+-- Drop existing policies
+DROP POLICY IF EXISTS "Portfolio items are viewable by everyone" ON public.portfolio_items;
+DROP POLICY IF EXISTS "Users can update their own portfolio items" ON public.portfolio_items;
+DROP POLICY IF EXISTS "Users can insert their own portfolio items" ON public.portfolio_items;
+DROP POLICY IF EXISTS "Users can delete their own portfolio items" ON public.portfolio_items;
+
+-- Create new policies that allow all operations for development
+CREATE POLICY "Portfolio items are viewable by everyone" ON public.portfolio_items
+    FOR SELECT USING (true);
+
+CREATE POLICY "Users can insert portfolio items" ON public.portfolio_items
+    FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Users can update portfolio items" ON public.portfolio_items
+    FOR UPDATE USING (true);
+
+CREATE POLICY "Users can delete portfolio items" ON public.portfolio_items
+    FOR DELETE USING (true);
+
+-- Alternative: More restrictive policies for production (uncomment if needed)
+-- CREATE POLICY "Portfolio items are viewable by everyone" ON public.portfolio_items
+--     FOR SELECT USING (true);
+
+-- CREATE POLICY "Users can insert their own portfolio items" ON public.portfolio_items
+--     FOR INSERT WITH CHECK (auth.uid()::text = profile_id);
+
+-- CREATE POLICY "Users can update their own portfolio items" ON public.portfolio_items
+--     FOR UPDATE USING (auth.uid()::text = profile_id);
+
+-- CREATE POLICY "Users can delete their own portfolio items" ON public.portfolio_items
+--     FOR DELETE USING (auth.uid()::text = profile_id); 

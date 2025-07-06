@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { User, Session } from '@supabase/supabase-js'
 import { supabase } from './supabase'
 import { User as AppUser, UserType } from './types'
+import { useRouter } from 'next/navigation'
 
 // =====================================================
 // AUTHENTICATION CONTEXT
@@ -32,24 +33,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // Check if Supabase is configured
+  const isSupabaseConfigured = supabase !== null
+
   // Initialize auth state
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      // Mock authentication for local development
+      console.log('🔧 Using mock authentication for local development')
+      setLoading(false)
+      return
+    }
+
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setSession(session)
-      
-      if (session?.user) {
-        await fetchUserProfile(session.user)
+      try {
+        const { data: { session } } = await supabase!.auth.getSession()
+        setSession(session)
+        
+        if (session?.user) {
+          await fetchUserProfile(session.user)
+        }
+      } catch (error) {
+        console.error('Error getting initial session:', error)
+      } finally {
+        setLoading(false)
       }
-      
-      setLoading(false)
     }
 
     getInitialSession()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const { data: { subscription } } = supabase!.auth.onAuthStateChange(
       async (event, session) => {
         setSession(session)
         
@@ -64,10 +79,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     )
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [isSupabaseConfigured])
 
   // Fetch user profile from our users table
   const fetchUserProfile = async (authUser: User) => {
+    if (!isSupabaseConfigured || !supabase) return
+
     try {
       const { data, error } = await supabase
         .from('users')
@@ -88,25 +105,88 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Sign up function
   const signUp = async (email: string, password: string, userType: UserType, userData?: Partial<AppUser>) => {
+    if (!isSupabaseConfigured) {
+      // Mock signup for local development
+      console.log('🔧 Mock signup:', { email, userType, userData })
+      
+      // Create mock user
+      const mockUser: AppUser = {
+        id: 'mock-user-id-' + Date.now(),
+        email,
+        user_type: userType,
+        full_name: userData?.full_name || 'Mock User',
+        company_name: userData?.company_name,
+        website: userData?.website,
+        phone: userData?.phone,
+        location: userData?.location,
+        bio: userData?.bio,
+        is_verified: true,
+        is_active: true,
+        subscription_tier: 'free',
+        subscription_status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+      
+      setUser(mockUser)
+      return { error: null }
+    }
+
     try {
-      const { data, error } = await supabase.auth.signUp({
+      // Check our users table first
+      const { data: existingUser } = await supabase!
+        .from('users')
+        .select('id')
+        .eq('email', email)
+        .single()
+      
+      if (existingUser) {
+        return { 
+          error: new Error('A user with this email already exists. Please sign in instead.') 
+        }
+      }
+      // Create the auth user
+      const { data, error } = await supabase!.auth.signUp({
         email,
         password,
         options: {
           data: {
             user_type: userType,
+            full_name: userData?.full_name,
+            company_name: userData?.company_name,
             ...userData
           }
         }
       })
 
       if (error) {
+        // Handle specific Supabase auth errors
+        if (error.message?.includes('User already registered')) {
+          return { error: new Error('A user with this email already exists. Please sign in instead.') }
+        } else if (error.message?.includes('Invalid email')) {
+          return { error: new Error('Please enter a valid email address') }
+        } else if (error.message?.includes('Password')) {
+          return { error: new Error('Password must be at least 6 characters long') }
+        } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+          return { error: new Error('Network error. Please check your connection and try again.') }
+        }
         return { error }
       }
 
-      // Create user profile in our users table
-      if (data.user) {
-        const { error: profileError } = await supabase
+      if (!data.user) {
+        return { error: new Error('Failed to create user account') }
+      }
+
+      // Wait longer for the auth user to be fully committed to the database
+      await new Promise(resolve => setTimeout(resolve, 3000))
+
+      // Try multiple approaches to create the user profile
+      let profileCreated = false
+      let lastError = null
+
+      // Approach 1: Try direct insertion
+      try {
+        const { error: profileError } = await supabase!
           .from('users')
           .insert([
             {
@@ -118,16 +198,78 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               website: userData?.website,
               phone: userData?.phone,
               location: userData?.location,
-              bio: userData?.bio
+              bio: userData?.bio,
+              is_verified: false,
+              is_active: true,
+              subscription_tier: 'free',
+              subscription_status: 'active'
             }
           ])
 
-        if (profileError) {
-          console.error('Error creating user profile:', profileError)
-          return { error: profileError }
+        if (!profileError) {
+          profileCreated = true
+          console.log('User profile created successfully via direct insertion')
+        } else {
+          lastError = profileError
+          console.error('Direct insertion failed:', profileError)
+        }
+      } catch (e) {
+        lastError = e
+        console.error('Direct insertion exception:', e)
+      }
+
+      // Approach 2: Check if profile already exists
+      if (!profileCreated) {
+        try {
+          const { data: existingProfile, error: checkError } = await supabase!
+            .from('users')
+            .select('id')
+            .eq('id', data.user.id)
+            .single()
+
+          if (existingProfile && !checkError) {
+            profileCreated = true
+            console.log('User profile already exists, proceeding with signup')
+          }
+        } catch (e) {
+          console.error('Profile check failed:', e)
         }
       }
 
+      // Approach 3: Try API route as last resort
+      if (!profileCreated) {
+        try {
+          const response = await fetch('/api/create-user-profile', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: data.user.id,
+              email: data.user.email,
+              userType: userType,
+              userData: userData
+            })
+          })
+
+          if (response.ok) {
+            profileCreated = true
+            console.log('User profile created successfully via API')
+          } else {
+            console.error('API creation failed:', response.statusText)
+          }
+        } catch (e) {
+          console.error('API call failed:', e)
+        }
+      }
+
+      if (!profileCreated) {
+        return { 
+          error: new Error(`Failed to create user profile after multiple attempts. Last error: ${lastError?.message || 'Unknown error'}`) 
+        }
+      }
+
+      console.log('User account and profile created successfully')
       return { error: null }
     } catch (error) {
       return { error }
@@ -136,8 +278,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Sign in function
   const signIn = async (email: string, password: string) => {
+    if (!isSupabaseConfigured) {
+      // Mock signin for local development
+      console.log('🔧 Mock signin:', { email, password })
+      
+      // Create mock user for any email/password combination
+      const mockUser: AppUser = {
+        id: 'mock-user-id-' + Date.now(),
+        email,
+        user_type: 'brand', // Default to brand for demo
+        full_name: 'Demo User',
+        is_verified: true,
+        is_active: true,
+        subscription_tier: 'free',
+        subscription_status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+      
+      setUser(mockUser)
+      return { error: null }
+    }
+
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase!.auth.signInWithPassword({
         email,
         password
       })
@@ -150,8 +314,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Sign out function
   const signOut = async () => {
+    if (!isSupabaseConfigured) {
+      // Mock signout for local development
+      console.log('🔧 Mock signout')
+      setUser(null)
+      setSession(null)
+      return
+    }
+
     try {
-      await supabase.auth.signOut()
+      await supabase!.auth.signOut()
       setUser(null)
       setSession(null)
     } catch (error) {
@@ -161,8 +333,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Reset password function
   const resetPassword = async (email: string) => {
+    if (!isSupabaseConfigured) {
+      // Mock reset password for local development
+      console.log('🔧 Mock reset password:', email)
+      return { error: null }
+    }
+
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase!.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`
       })
 
@@ -174,12 +352,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Update profile function
   const updateProfile = async (updates: Partial<AppUser>) => {
+    if (!isSupabaseConfigured) {
+      // Mock update profile for local development
+      console.log('🔧 Mock update profile:', updates)
+      setUser(prev => prev ? { ...prev, ...updates } : null)
+      return { error: null }
+    }
+
     try {
       if (!user) {
         return { error: new Error('No user logged in') }
       }
 
-      const { error } = await supabase
+      const { error } = await supabase!
         .from('users')
         .update(updates)
         .eq('id', user.id)
@@ -199,8 +384,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Refresh user data
   const refreshUser = async () => {
-    if (session?.user) {
-      await fetchUserProfile(session.user)
+    if (!isSupabaseConfigured) {
+      console.log('🔧 Mock refresh user')
+      return
+    }
+
+    try {
+      const { data: { user: authUser } } = await supabase!.auth.getUser()
+      if (authUser) {
+        await fetchUserProfile(authUser)
+      }
+    } catch (error) {
+      console.error('Error refreshing user:', error)
     }
   }
 
@@ -224,7 +419,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 // =====================================================
-// AUTHENTICATION HOOK
+// HOOKS
 // =====================================================
 
 export function useAuth() {
@@ -235,34 +430,28 @@ export function useAuth() {
   return context
 }
 
-// =====================================================
-// PROTECTED ROUTE HOOK
-// =====================================================
-
 export function useRequireAuth(redirectTo = '/login') {
   const { user, loading } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     if (!loading && !user) {
-      window.location.href = redirectTo
+      router.push(redirectTo)
     }
-  }, [user, loading, redirectTo])
+  }, [user, loading, router, redirectTo])
 
   return { user, loading }
 }
 
-// =====================================================
-// ROLE-BASED ACCESS HOOK
-// =====================================================
-
 export function useRequireRole(allowedRoles: UserType[], redirectTo = '/unauthorized') {
   const { user, loading } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     if (!loading && user && !allowedRoles.includes(user.user_type)) {
-      window.location.href = redirectTo
+      router.push(redirectTo)
     }
-  }, [user, loading, allowedRoles, redirectTo])
+  }, [user, loading, router, redirectTo, allowedRoles])
 
   return { user, loading }
 }

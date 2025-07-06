@@ -1,39 +1,71 @@
--- Fix RLS Policies for Contact Submissions
--- Run this SQL in your Supabase SQL editor to fix the contact form RLS policies
+-- =====================================================
+-- COMPREHENSIVE RLS POLICY FIX FOR USER SIGNUP
+-- =====================================================
 
--- First, drop any existing policies for contact_submissions
-DROP POLICY IF EXISTS "Allow insert access for all users" ON contact_submissions;
-DROP POLICY IF EXISTS "Allow read access for authenticated users" ON contact_submissions;
-DROP POLICY IF EXISTS "Enable insert for anonymous users" ON contact_submissions;
-DROP POLICY IF EXISTS "Enable all access for service role" ON contact_submissions;
-DROP POLICY IF EXISTS "Enable read for authenticated users" ON contact_submissions;
-DROP POLICY IF EXISTS "Allow all access" ON contact_submissions;
+-- First, drop all existing policies to start fresh
+DROP POLICY IF EXISTS "Users can view their own profile" ON public.users;
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.users;
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.users;
+DROP POLICY IF EXISTS "Enable read access for all users" ON public.users;
+DROP POLICY IF EXISTS "Enable insert for authenticated users only" ON public.users;
+DROP POLICY IF EXISTS "Enable update for users based on id" ON public.users;
+DROP POLICY IF EXISTS "Enable delete for users based on id" ON public.users;
 
--- Temporarily disable RLS to test
-ALTER TABLE contact_submissions DISABLE ROW LEVEL SECURITY;
+-- Create comprehensive RLS policies for users table
+-- Allow users to insert their own profile during signup
+CREATE POLICY "Users can insert their own profile" ON public.users
+    FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Re-enable RLS
-ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
+-- Allow users to view their own profile
+CREATE POLICY "Users can view their own profile" ON public.users
+    FOR SELECT USING (auth.uid() = id);
 
--- Create a comprehensive policy that allows all operations for all users
-CREATE POLICY "Allow all access" ON contact_submissions
-  FOR ALL 
-  TO public
-  USING (true)
-  WITH CHECK (true);
+-- Allow users to update their own profile
+CREATE POLICY "Users can update their own profile" ON public.users
+    FOR UPDATE USING (auth.uid() = id);
 
--- Alternative: Create specific policies if the above doesn't work
--- CREATE POLICY "Enable insert for all" ON contact_submissions
---   FOR INSERT 
---   TO public
---   WITH CHECK (true);
+-- Allow service role to manage all users (for admin functions)
+CREATE POLICY "Service role can manage all users" ON public.users
+    FOR ALL USING (auth.role() = 'service_role');
 
--- CREATE POLICY "Enable select for authenticated users" ON contact_submissions
---   FOR SELECT 
---   TO authenticated
---   USING (true);
+-- Enable RLS on users table
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
--- Verify the policies are created
-SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual, with_check
+-- =====================================================
+-- FIX OTHER TABLES RLS POLICIES
+-- =====================================================
+
+-- Waitlist entries - allow public insert
+DROP POLICY IF EXISTS "Enable insert for authenticated users only" ON public.waitlist_entries;
+DROP POLICY IF EXISTS "Enable read access for all users" ON public.waitlist_entries;
+
+CREATE POLICY "Enable insert for all users" ON public.waitlist_entries
+    FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Enable read access for all users" ON public.waitlist_entries
+    FOR SELECT USING (true);
+
+-- Contact submissions - allow public insert
+DROP POLICY IF EXISTS "Enable insert for authenticated users only" ON public.contact_submissions;
+DROP POLICY IF EXISTS "Enable read access for all users" ON public.contact_submissions;
+
+CREATE POLICY "Enable insert for all users" ON public.contact_submissions
+    FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Enable read access for all users" ON public.contact_submissions
+    FOR SELECT USING (true);
+
+-- =====================================================
+-- VERIFICATION QUERIES
+-- =====================================================
+
+-- Check if policies are created
+SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual, with_check 
 FROM pg_policies 
-WHERE tablename = 'contact_submissions'; 
+WHERE tablename IN ('users', 'waitlist_entries', 'contact_submissions')
+ORDER BY tablename, policyname;
+
+-- Check RLS status
+SELECT schemaname, tablename, rowsecurity 
+FROM pg_tables 
+WHERE tablename IN ('users', 'waitlist_entries', 'contact_submissions'); 

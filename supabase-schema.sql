@@ -6,6 +6,41 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- =====================================================
+-- WAITLIST & CONTACT FORMS
+-- =====================================================
+
+-- Waitlist entries table
+CREATE TABLE IF NOT EXISTS public.waitlist_entries (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    email TEXT UNIQUE NOT NULL,
+    user_type TEXT CHECK (user_type IN ('brand', 'creator')) NOT NULL,
+    primary_goal TEXT,
+    biggest_challenge TEXT,
+    current_solution TEXT,
+    budget_range TEXT,
+    timeline TEXT,
+    most_important TEXT,
+    primary_platform TEXT,
+    follower_count TEXT,
+    content_niche TEXT,
+    collaboration_experience TEXT,
+    creator_challenge TEXT,
+    creator_important TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Contact submissions table
+CREATE TABLE IF NOT EXISTS public.contact_submissions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    company TEXT,
+    subject TEXT NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =====================================================
 -- USERS & AUTHENTICATION
 -- =====================================================
 

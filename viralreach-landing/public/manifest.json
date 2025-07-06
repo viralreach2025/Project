@@ -1,0 +1,17 @@
+{
+  "name": "ViralReach - Performance-Driven Creator Platform",
+  "short_name": "ViralReach",
+  "description": "Connect with 50K+ verified creators who genuinely promote your products. Track real metrics and only pay for verified performance.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": ["business", "marketing", "social"],
+  "screenshots": [],
+  "icons": [],
+  "shortcuts": []
+} 
